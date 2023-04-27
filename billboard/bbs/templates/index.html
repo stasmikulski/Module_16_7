@@ -1,0 +1,54 @@
+{% extends 'defaultwm.html' %}
+{% load custom_filters %}
+{% load custom_tags %}
+
+{% block title %}
+<!--from index.html-->
+<br>
+    <div class="dropdown-menu show">
+        {% for cat in categories %}
+        <a class="dropdown-item fw-bold" href="/category/{{ cat.name }}/">{{ cat.namerus }}</a>
+        {% endfor %}
+    </div>
+{% endblock title %}
+
+
+{% block content %}
+{% if user.is_authenticated %}
+<div style="display: inline-block; margin: 0;">
+    <nav class="navbar navbar-expand-lg static-top">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link fw-bold" href="/bbs/create/">Create Post</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fw-bold" href="/my_posts/">My posts</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fw-bold" href="/my_comments/">My comments</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fw-bold" href="/responses_to_me/">Responses To Me</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+<br>
+{% endif %}
+<br>
+<h1>5 last posts in all categories:</h1>
+{% for new in bbs %}
+<br>
+<h2 class="mark">{{ new.title }}</h2>
+<h6 class="small"><i>{{ new.datethis }}; Author: {{ new.author.authorUser.username }}</i></h6>
+<h6>Category: {{ new.catname }}</h6>
+<h6>#{{ new.id }}</h6>
+
+<h5><a href="{{ new.get_absolute_url }}">{{ new.text|truncatechars:30 }} </a></h5>
+<p class="small">Comments: {{ new.comm_count }}</p>
+<br>
+{% endfor %}
+
+
+
+{% endblock content %}

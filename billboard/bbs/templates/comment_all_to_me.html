@@ -1,0 +1,43 @@
+{% extends 'default.html' %}
+
+{% block content %}
+<!--from comment_all_my.html-->
+{% if user.is_authenticated %}
+<div style="display: inline-block; margin: 0;">
+    <nav class="navbar navbar-expand-lg static-top">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link fw-bold" href="/bbs/create/">Create Post</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fw-bold" href="/my_posts/">My posts</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fw-bold" href="/my_comments/">My comments</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fw-bold active">Responses To Me</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+<br>
+{% endif %}
+<br>
+<h1>All Responses To Me:</h1>
+<hr>
+{% for comment in comments %}
+
+<p class="inline-block"><b>{{ comment.text }} - </b>
+    <i> Author: {{ comment.commentUser.username }};
+        {{ comment.dateCreation|date:'d-m-Y' }}.
+    {% if perms.bbs.change_comment and perms.bbs.delete_comment %}
+    <a class="inline-block" href="{% url 'comment_confirm' id1=comment.commentPost.id id2=comment.id %}">
+        <mark>Confirm</mark></a> or
+    <a class="inline-block" href="{% url 'comment_delete' id1=comment.commentPost.id id2=comment.id %}">
+        <mark>Delete</mark></a>
+    {% endif %}
+</p>
+{% endfor %}
+
+{% endblock content %}
