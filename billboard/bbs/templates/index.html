@@ -36,16 +36,15 @@
 <br>
 {% endif %}
 <br>
-<h1>5 last posts in all categories:</h1>
+<h1>10 last posts in all categories:</h1>
 {% for new in bbs %}
 <br>
 <h2 class="mark">{{ new.title }}</h2>
-<h6 class="small"><i>{{ new.datethis }}; Author: {{ new.author.authorUser.username }}</i></h6>
+<h6 class="small7">#{{ new.id }},  {{ new.datethis }}</h6>
+<h6><i>Author: {{ new.author.authorUser.username }}</i></h6>
 <h6>Category: {{ new.catname }}</h6>
-<h6>#{{ new.id }}</h6>
-
 <h5><a href="{{ new.get_absolute_url }}">{{ new.text|truncatechars:30 }} </a></h5>
-<p class="small">Comments: {{ new.comm_count }}</p>
+<p>Comments: {{ new.comm_conf_count }}</p>
 <br>
 {% endfor %}
 

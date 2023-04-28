@@ -68,6 +68,10 @@ class Post(models.Model):
         comm_count = Comment.objects.filter(commentPost=self.id).count()
         return comm_count
 
+    def comm_conf_count(self):
+        comm_conf_count = Comment.objects.filter(commentPost=self.id, confirmed=True).count()
+        return comm_conf_count
+
     def get_absolute_url(self):
         return reverse('post_detail_show', kwargs={'id':self.id})
 

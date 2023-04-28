@@ -25,7 +25,7 @@ class IndexView(View):
 
 # Create your views here.
 def index(request):
-    bbs = Post.objects.all().order_by("dateCreation").reverse()[:5]
+    bbs = Post.objects.all().order_by("dateCreation").reverse()[:10]
     # bbs = Post.objects.all().order_by("-id")
     categories = Category.objects.all()
     return render(request, 'index.html', context={'bbs': bbs, 'categories': categories})
@@ -76,7 +76,7 @@ class PostSearch(ListView):
 
 class PostbyCategList(ListView):
    model = Post
-   template_name = 'bbs_list.html'
+   template_name = 'bbs_list_cat.html'
    context_object_name = 'bbs'
    paginate_by = 5
 
@@ -87,7 +87,13 @@ class PostbyCategList(ListView):
 def postbycategory(request, slug):
     qs = Post.objects.filter(categoryType=slug).order_by("dateCreation").reverse()
     categories = Category.objects.all()
-    return render(request, 'bbs_list.html', {'bbs': qs, 'categories': categories, 'slugname': slug})
+    namerus = catdictionary[slug]
+    return render(request, 'bbs_list_cat.html', {
+        'bbs': qs,
+        'categories': categories,
+        'slug': slug,
+        'namerus': namerus
+    })
 
 
 class PostDetail(DetailView):
@@ -276,7 +282,7 @@ def comment_confirm_view(request, id1, id2):
 class ContactList(ListView):
     model = Post
     ordering = '-dateCreation'
-    template_name = 'bbs_list.html'
+    template_name = 'bbs_list_cat.html'
     context_object_name = 'bbs'
     paginate_by = 5
 
@@ -298,19 +304,18 @@ def MyPostList(request):
 @login_required
 @csrf_protect
 def MyCommentList(request):
-    #_qs = Comment.objects.filter(post__author=user)
-    qs = Comment.objects.filter(commentUser=request.user.id)
-    print(qs)
-    #.order_by("dateCreation").reverse()
-    return render(request, 'comment_all_my.html', {'comments': qs})
+    qs = Comment.objects.filter(commentUser=request.user.id).distinct().order_by("dateCreation").reverse()
+    post_qs = Post.objects.filter(comment__commentUser=request.user.id).distinct().order_by("dateCreation").reverse()
+    print(post_qs)
+    print(post_qs.count())
+    return render(request, 'comment_all_my.html', {'comments': qs, 'news': post_qs})
 
 
 @login_required
 @csrf_protect
 def ResponsesToMeList(request):
-    qs = Comment.objects.filter(commentPost__author=request.user.id)
-    #qs = Comment.objects.filter(commentUser=request.user.id)
-    print(qs)
+    qs = Comment.objects.filter(commentPost__author=request.user.id).order_by("dateCreation").reverse()
+    post_qs = Post.objects.filter(author=request.user.id).order_by("dateCreation").reverse()
     #.order_by("dateCreation").reverse()
-    return render(request, 'comment_all_to_me.html', {'comments': qs})
+    return render(request, 'comment_all_to_me.html', {'comments': qs, 'news': post_qs})
 

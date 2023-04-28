@@ -26,18 +26,31 @@
 <br>
 <h1>All my comments:</h1>
 <hr>
-{% for comment in comments %}
-
-<p class="inline-block"><b>{{ comment.text }} - </b>
-    <i> Author: {{ comment.commentUser.username }};
-        {{ comment.dateCreation|date:'d-m-Y' }}.
-    {% if perms.bbs.change_comment and perms.bbs.delete_comment %}
-    <a class="inline-block" href="{% url 'comment_edit' id1=comment.commentPost.id id2=comment.id %}">
-        <mark>Edit</mark></a> or
-    <a class="inline-block" href="{% url 'comment_delete' id1=comment.commentPost.id id2=comment.id %}">
-        <mark>Delete</mark></a>
-    {% endif %}
-</p>
-{% endfor %}
-
+{% if comments %}
+    {% for new in news %}
+        {% if new.comm_count > 0 %}
+            <p class="markb small7">
+            Объявление #{{ new.id }}, Категория: {{ new.catname }}.
+                <i>Author: {{ new.author.authorUser.username }}</i> ::
+                <b>{{ new.title }}</b> ::
+                {{ new.text|truncatechars:30 }}, {{ new.datethis }}, Comments: {{ new.comm_count }}</p>
+            {% for comment in comments %}
+                {% if new.id == comment.commentPost.id %}
+                    <p class="inline-block"><b>{{ comment.text }} - </b>
+                        <i> Author: {{ comment.commentUser.username }};
+                            {{ comment.dateCreation|date:'d-m-Y' }}.</i>
+                        {% if perms.bbs.change_comment and perms.bbs.delete_comment %}
+                            <a class="inline-block" href="{% url 'comment_edit' id1=comment.commentPost.id id2=comment.id %}">
+                                <mark>Edit</mark></a>&nbsp;or&nbsp;
+                            <a class="inline-block" href="{% url 'comment_delete' id1=comment.commentPost.id id2=comment.id %}">
+                            <mark>Delete</mark></a>
+                        {% endif %}
+                    </p>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+{% else %}
+    <p class="inline-block"><b>Вы еще не написали никаких откликов</b>
+{% endif %}
 {% endblock content %}

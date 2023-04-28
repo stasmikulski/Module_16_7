@@ -210,16 +210,31 @@ strong {
 }
 
 small, .small {
-  font-size: 0. 5em;
+  font-size: 0.5em;
 }
 
-small5, .small5 {
-  font-size: 0.5em;
+small7, .small7 {
+  font-size: 0.7em;
 }
 
 mark, .mark {
   padding: 0.2em;
   background-color: #fcf8e3;
+}
+
+markg, .markg {
+  padding: 0.2em;
+  background-color: #eeffe8;
+}
+
+markb, .markb {
+  padding: 0.2em;
+  background-color: #e8eeff;
+}
+
+marky, .marky {
+  padding: 0.2em;
+  background-color: #fef8e5;
 }
 
 sub,
@@ -4523,6 +4538,7 @@ textarea.form-control-lg {
   border: 1px solid rgba(0, 0, 0, 0.125);
   border-radius: 0.25rem;
 }
+
 .card > hr {
   margin-right: 0;
   margin-left: 0;
@@ -11300,4 +11316,17 @@ textarea.form-control-lg {
   .d-print-none {
     display: none !important;
   }
+}
+
+a.nav-link.fw-bold:hover {
+  background-color: #e9ecef;
+}
+a.nav-item.nav-link.fw-bold.card {
+  margin: auto;
+  width: fit-content;
+  background-color: #f0f0f0;
+}
+a.nav-item.nav-link.fw-bold.card:hover {
+  width: 200;
+  background-color: #cccccc;
 }

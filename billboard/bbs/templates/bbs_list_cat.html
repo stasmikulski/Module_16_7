@@ -1,9 +1,21 @@
-{% extends 'default.html' %}
+{% extends 'defaultwm.html' %}
 {% load custom_filters %}
 {% load custom_tags %}
+{% block title %}
+<!--from bbs_list_cat.html-->
+<br>
+    <div class="dropdown-menu show">
+        {% for cat in categories %}
+            {% if cat.name != slug %}
+                <a class="dropdown-item fw-bold" href="/category/{{ cat.name }}/">{{ cat.namerus }}</a>
+            {% else %}
+                <a class="dropdown-item fw-bold active">{{ cat.namerus }}</a>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock title %}
 
 {% block content %}
-<!--from search.html-->
 {% if user.is_authenticated %}
 <div style="display: inline-block; margin: 0;">
     <nav class="navbar navbar-expand-lg static-top">
@@ -26,11 +38,7 @@
 <br>
 {% endif %}
 <br>
-<h1>Search post using this form:</h1>
-   <form action="" method="get">
-       {{ filterset.form.as_p }}
-       <input type="submit" class="mt-3 btn-primary" value="Найти" />
-   </form>
+<h1>{{ namerus }}</h1>
 <hr>
 {% for new in bbs %}
 <br>
@@ -42,6 +50,7 @@
 <p>Comments: {{ new.comm_conf_count }}</p>
 <br>
 {% endfor %}
+
    {# Добавляем пагинацию на страницу #}
 
 <nav aria-label="Page navigation example">
