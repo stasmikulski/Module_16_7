@@ -34,6 +34,7 @@
 </div>
 <br>
 {% endif %}
+
 <br>
 <h1>10 last posts in all categories:</h1>
 {% for new in news %}
@@ -46,7 +47,5 @@
 <p>Comments: {{ new.comm_conf_count }}</p>
 <br>
 {% endfor %}
-
-
 
 {% endblock content %}

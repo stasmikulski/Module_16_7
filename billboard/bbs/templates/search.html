@@ -1,5 +1,18 @@
-{% extends 'default.html' %}
+{% extends 'defaultwm.html' %}
 {% load custom_tags %}
+{% block title %}
+<!--from bbs_list_cat.html-->
+<br>
+    <div class="dropdown-menu show">
+        {% for cat in categories %}
+            {% if cat.name != slug %}
+                <a class="dropdown-item fw-bold" href="/category/{{ cat.name }}/">{{ cat.namerus }}</a>
+            {% else %}
+                <a class="dropdown-item fw-bold active">{{ cat.namerus }}</a>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock title %}
 
 {% block content %}
 <!--from search.html-->
@@ -31,7 +44,7 @@
        <input type="submit" class="mt-3 btn-primary" value="Найти" />
    </form>
 <hr>
-{% for new in bbs %}
+{% for new in posts %}
 <br>
 <h2 class="mark">{{ new.title }}</h2>
 <h6 class="small7">#{{ new.id }},  {{ new.datethis }}</h6>
@@ -41,32 +54,37 @@
 <p>Comments: {{ new.comm_conf_count }}</p>
 <br>
 {% endfor %}
-   {# Добавляем пагинацию на страницу #}
 
+{# Добавляем пагинацию на страницу #}
 <nav aria-label="Page navigation example">
-  <ul class="pagination justify-content-center">
-   {# Информация о предыдущих страницах #}
-   {% if page_obj.has_previous %}
-<li class="page-item"><a class="page-link" href="?{% url_replace page=1 %}">1</a></li>
-       {% if page_obj.previous_page_number != 1 %}
-           ...
-<li class="page-item"><a class="page-link" href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a></li>
-       {% endif %}
-   {% endif %}
+    <ul class="pagination justify-content-center">
+        {# Информация о предыдущих страницах #}
+        {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?{% url_replace page=1 %}">1</a></li>
+            {% if page_obj.previous_page_number != 1 %}
+                {% if page_obj.previous_page_number != 2 %}
+                    ...
+                {% endif %}
+                <li class="page-item"><a class="page-link" href="?{% url_replace page=page_obj.previous_page_number %}">
+                {{ page_obj.previous_page_number }}</a></li>
+            {% endif %}
+        {% endif %}
+        {# Информация о текущей странице #}
+        <li class="page-item page-link-2">{{ page_obj.number }}</li>
 
-   {# Информация о текущей странице #}
-      <li class="page-item page-link-2">{{ page_obj.number }}</li>
-
-   {# Информация о следующих страницах #}
-   {% if page_obj.has_next %}
-<li class="page-item"><a class="page-link" href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a></li>
-       {% if paginator.num_pages != page_obj.next_page_number %}
-           ...
-<li class="page-item"><a class="page-link" href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a></li>
-       {% endif %}
-   {% endif %}
-
-  </ul>
+        {# Информация о следующих страницах #}
+        {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?{% url_replace page=page_obj.next_page_number %}">
+            {{ page_obj.next_page_number }}</a></li>
+            {% if page_obj.paginator.num_pages != page_obj.next_page_number %}
+                {% if page_obj.paginator.num_pages  != page_obj.next_page_number|add:"1" %}
+                    ...
+                {% endif %}
+                <li class="page-item"><a class="page-link" href="?{% url_replace page=page_obj.paginator.num_pages %}">
+                {{ page_obj.paginator.num_pages }}</a></li>
+            {% endif %}
+        {% endif %}
+    </ul>
 </nav>
 
 {% endblock content %}

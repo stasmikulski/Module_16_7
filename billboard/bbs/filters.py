@@ -1,6 +1,6 @@
-from django_filters import FilterSet, DateTimeFilter, ModelChoiceFilter
+from django_filters import FilterSet, DateTimeFilter, ModelChoiceFilter, ChoiceFilter
 from django.forms import DateTimeInput
-from .models import Post, Author, Category
+from .models import Post, Author, Category, CATEGORY_CHOICES
 
 class PostFilter(FilterSet):
     added_after = DateTimeFilter(
@@ -16,8 +16,8 @@ class PostFilter(FilterSet):
         label = 'Authors',
         empty_label = 'All'
     )
-    categoryType = ModelChoiceFilter(
-        queryset = Category.objects.all(),
+    categoryType = ChoiceFilter(
+        choices = CATEGORY_CHOICES,
         label = 'Category',
         empty_label = 'Any'
     )

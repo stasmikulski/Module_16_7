@@ -33,9 +33,6 @@ def index(request):
 def detail(request, id):
     new = Post.objects.get(id=id)
     post_comments = Comment.objects.filter(commentPost=Post.objects.get(id=id))
-    ####post_comments_count = Comment.objects.filter(commentPost=Post.objects.get(id=id)).count()
-    #post_comments_values = post_comments.values('dateCreation', 'commentUser', 'rating', 'text')
-    #print(post_comments_values)
     return render(request, 'details.html', context={'new': new, 'post_comments': post_comments})
 
 
@@ -51,24 +48,18 @@ class PostSearch(ListView):
    model = Post
    ordering = '-dateCreation'
    template_name = 'search.html'
-   context_object_name = 'news'
+   context_object_name = 'posts'
    paginate_by = 5
 
-   # Переопределяем функцию получения списка новостей
    def get_queryset(self):
-       # Получаем обычный запрос
        queryset = super().get_queryset()
-       # Используем наш класс фильтрации.
-       # self.request.GET содержит объект QueryDict, который мы рассматривали
-       # в этом юните ранее.
-       # Сохраняем нашу фильтрацию в объекте класса,
-       # чтобы потом добавить в контекст и использовать в шаблоне.
        self.filterset = PostFilter(self.request.GET, queryset)
-       # Возвращаем из функции отфильтрованный список новостей
        return self.filterset.qs
 
    def get_context_data(self, **kwargs):
        context = super().get_context_data(**kwargs)
+       categories = Category.objects.all()
+       context['categories'] = categories
        # Добавляем в контекст объект фильтрации.
        context['filterset'] = self.filterset
        return context
@@ -88,14 +79,17 @@ def postbycategory(request, slug):
     qs = Post.objects.filter(categoryType=slug).order_by("dateCreation").reverse()
     categories = Category.objects.all()
     namerus = catdictionary[slug]
-    paginator = Paginator(qs, 1)
+    paginator = Paginator(qs, 3)
+    print(paginator)
     page = request.GET.get('page')
+    print(page)
     try:
         posts = paginator.page(page)
     except PageNotAnInteger:
         posts = paginator.page(1)
     except EmptyPage:
         posts = paginator.page(paginator.num_pages)
+    print(posts)
     return render(request, 'bbs_list_cat.html', {
         'posts': posts,
         'page': page,
@@ -316,8 +310,8 @@ def MyPostList(request):
 def MyCommentList(request):
     qs = Comment.objects.filter(commentUser=request.user.id).distinct().order_by("dateCreation").reverse()
     post_qs = Post.objects.filter(comment__commentUser=request.user.id).distinct().order_by("dateCreation").reverse()
-    print(post_qs)
-    print(post_qs.count())
+    #print(post_qs)
+    #print(post_qs.count())
     return render(request, 'comment_all_my.html', {'comments': qs, 'news': post_qs})
 
 
