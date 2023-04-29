@@ -3,7 +3,8 @@
 {% block content %}
 <!--from comment_delete.html-->
 {% if perms.bbs.change_post or perms.bbs.delete_post %}
-    {% if user.username == comment.commentUser.username or user.username == new.author.authorUser.username %}
+    {% if user == comment.commentUser or user == new.author.authorUser %}
+
         <br>
         <h6>Delete Comment to post id={{ new.id }}</h6>
         <hr>

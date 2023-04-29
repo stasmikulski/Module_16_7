@@ -1,0 +1,46 @@
+{% load custom_tags %}
+<div class="pagination justify-content-center">
+    <span class="step-links">
+        {% if page.has_previous %}
+            <a href="?page={{ page.previous_page_number }}">Previous</a>
+        {% endif %}
+        <span class="current">
+            Page {{ page.number }} of {{ page.paginator.num_pages }}.
+        </span>
+        {% if page.has_next %}
+            <a href="?page={{ page.next_page_number }}">Next</a>
+        {% endif %}
+    </span>
+</div>
+<br>
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        {# Информация о предыдущих страницах #}
+        {% if page.has_previous %}
+            <li class="page-item"><a class="page-link" href="?{% url_replace page=1 %}">1</a></li>
+            {% if page.previous_page_number != 1 %}
+                {% if page.previous_page_number != 2 %}
+                    ...
+                {% endif %}
+                <li class="page-item"><a class="page-link" href="?{% url_replace page=page.previous_page_number %}">
+                {{ page.previous_page_number }}</a></li>
+            {% endif %}
+        {% endif %}
+        {# Информация о текущей странице #}
+        <li class="page-item page-link-2">{{ page.number }}</li>
+
+        {# Информация о следующих страницах #}
+        {% if page.has_next %}
+            <li class="page-item"><a class="page-link" href="?{% url_replace page=page.next_page_number %}">
+            {{ page.next_page_number }}</a></li>
+            {% if page.paginator.num_pages != page.next_page_number %}
+                {% if page.paginator.num_pages  != page.next_page_number|add:"1" %}
+                    ...
+                {% endif %}
+                <li class="page-item"><a class="page-link" href="?{% url_replace page=page.paginator.num_pages %}">
+                {{ page.paginator.num_pages }}</a></li>
+            {% endif %}
+        {% endif %}
+    </ul>
+</nav>

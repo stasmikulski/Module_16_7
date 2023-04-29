@@ -12,10 +12,10 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Exists, OuterRef
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
-from django.core.cache import cache
 from django.http import HttpResponse
 from django.views import View
-#from .tasks import hello, my_job
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 class IndexView(View):
     def get(self, request):
@@ -28,7 +28,7 @@ def index(request):
     bbs = Post.objects.all().order_by("dateCreation").reverse()[:10]
     # bbs = Post.objects.all().order_by("-id")
     categories = Category.objects.all()
-    return render(request, 'index.html', context={'bbs': bbs, 'categories': categories})
+    return render(request, 'index.html', context={'news': bbs, 'categories': categories})
 
 def detail(request, id):
     new = Post.objects.get(id=id)
@@ -43,7 +43,7 @@ class PostList(ListView):
    model = Post
    ordering = '-dateCreation'
    template_name = 'bbs_list_all.html'
-   context_object_name = 'bbs'
+   context_object_name = 'news'
    paginate_by = 5
 
 
@@ -51,7 +51,7 @@ class PostSearch(ListView):
    model = Post
    ordering = '-dateCreation'
    template_name = 'search.html'
-   context_object_name = 'bbs'
+   context_object_name = 'news'
    paginate_by = 5
 
    # Переопределяем функцию получения списка новостей
@@ -77,7 +77,7 @@ class PostSearch(ListView):
 class PostbyCategList(ListView):
    model = Post
    template_name = 'bbs_list_cat.html'
-   context_object_name = 'bbs'
+   context_object_name = 'news'
    paginate_by = 5
 
    def get_queryset(self):
@@ -88,8 +88,17 @@ def postbycategory(request, slug):
     qs = Post.objects.filter(categoryType=slug).order_by("dateCreation").reverse()
     categories = Category.objects.all()
     namerus = catdictionary[slug]
+    paginator = Paginator(qs, 1)
+    page = request.GET.get('page')
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
     return render(request, 'bbs_list_cat.html', {
-        'bbs': qs,
+        'posts': posts,
+        'page': page,
         'categories': categories,
         'slug': slug,
         'namerus': namerus
@@ -273,7 +282,8 @@ def comment_confirm_view(request, id1, id2):
         #print('- - - form valid - - new:', id1, '- - comment:', id2)
         comment2conf.confirmed = True
         comment2conf.save()
-        return HttpResponseRedirect(reverse('post_detail_show', kwargs={'id': id1}))
+        #return HttpResponseRedirect(reverse('post_detail_show', kwargs={'id': id1}))
+        return HttpResponseRedirect(reverse('responsestome'))
     else:
         #No data submitted; create a blank form.
         form = CommentForm()
@@ -283,7 +293,7 @@ class ContactList(ListView):
     model = Post
     ordering = '-dateCreation'
     template_name = 'bbs_list_cat.html'
-    context_object_name = 'bbs'
+    context_object_name = 'news'
     paginate_by = 5
 
     def get_queryset(self):
@@ -299,7 +309,7 @@ class ContactList(ListView):
 @csrf_protect
 def MyPostList(request):
     qs = Post.objects.filter(author=request.user.id).order_by("dateCreation").reverse()
-    return render(request, 'bbs_list_all_my.html', {'bbs': qs})
+    return render(request, 'bbs_list_all_my.html', {'news': qs})
 
 @login_required
 @csrf_protect

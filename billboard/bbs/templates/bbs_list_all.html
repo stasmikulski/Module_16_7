@@ -1,6 +1,6 @@
 {% extends 'defaultwm.html' %}
-{% load custom_filters %}
 {% load custom_tags %}
+
 {% block title %}
 <!--from bbs_list_all.html-->
 <br>
@@ -44,7 +44,7 @@
 <h1>All posts in all categories:</h1>
 <hr>
 
-{% for new in bbs %}
+{% for new in news %}
 <br>
 <h2 class="mark">{{ new.title }}</h2>
 <h6 class="small7">#{{ new.id }},  {{ new.datethis }}</h6>

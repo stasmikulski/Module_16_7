@@ -1,5 +1,4 @@
 {% extends 'default.html' %}
-{% load custom_filters %}
 {% load custom_tags %}
 
 {% block content %}
@@ -29,8 +28,8 @@
 <br>
 <h1>All my posts:</h1>
 <hr>
-{% if bbs %}
-    {% for new in bbs %}
+{% if news %}
+    {% for new in news %}
         <br>
         <h2 class="mark">{{ new.title }}</h2>
         <h6 class="small7">#{{ new.id }},  {{ new.datethis }}</h6>
